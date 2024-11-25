@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 interface StarRatingProps {
     initialRating: number;
     isEditable: boolean;
+    onChange?: (rating: number) => void; // Add onChange prop
 }
 
-const StarRating: React.FC<StarRatingProps> = ({ initialRating, isEditable }) => {
+const StarRating: React.FC<StarRatingProps> = ({ initialRating, isEditable, onChange }) => {
     const [rating, setRating] = useState(initialRating); // Current rating value
     const [hover, setHover] = useState(0); // Current hovered star
 
@@ -16,6 +17,9 @@ const StarRating: React.FC<StarRatingProps> = ({ initialRating, isEditable }) =>
     const handleClick = (value: number) => {
         if (isEditable) {
             setRating(value);
+            if (onChange) {
+                onChange(value); // Call onChange prop when rating is updated
+            }
         }
     };
 

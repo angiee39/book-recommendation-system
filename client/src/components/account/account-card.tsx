@@ -39,10 +39,11 @@ import {Loader2} from "lucide-react";
 
 const FormSchema = z.object({
     id: z.number(),
-    name: z.string().min(2, {
+    username: z.string().min(2, {
         message: "Name must be at least 2 characters.",
     }),
-    notification: z.boolean()
+    first_name: z.string(),
+    last_name: z.string(),
 })
 
 export function AccountCard() {
@@ -52,15 +53,17 @@ export function AccountCard() {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            name: "",
-            notification: false,
+            username: "",
+            first_name: "",
+            last_name: "",
         },
     })
 
     useEffect(() => {
         form.setValue('id', user?.id || 0);
-        form.setValue('name', user?.name || "");
-        form.setValue('notification', user?.notification || false);
+        form.setValue('username', user?.username || "");
+        form.setValue('first_name', user?.first_name || "");
+        form.setValue('last_name', user?.last_name || "");
     }, [user, form]);
 
 
@@ -71,7 +74,7 @@ export function AccountCard() {
         onSuccess: (data) => {
             if (data.isSuccess) {
                 // Saving one signal external ID to send notifications to user
-                OneSignal.logout()
+                // OneSignal.logout()
                 setUser(null);
                 router.push('/login');
                 toast({
@@ -104,8 +107,9 @@ export function AccountCard() {
                     title: "You have successfully updated your account.",
                 })
             } else {
-                form.setValue('name', user?.name);
-                form.setValue('notification', user?.notification);
+                form.setValue('username', user?.username);
+                form.setValue('first_name', user?.first_name);
+                form.setValue('last_name', user?.last_name);
                 toast({
                     variant: "destructive",
                     title: "There was an error updating your account.",
@@ -113,8 +117,9 @@ export function AccountCard() {
             }
         },
         onError: (error) => {
-            form.setValue('name', user?.name);
-            form.setValue('notification', user?.notification);
+            form.setValue('username', user?.username);
+            form.setValue('first_name', user?.first_name);
+            form.setValue('last_name', user?.last_name);
             console.log(error)
             toast({
                 variant: "destructive",
@@ -133,7 +138,8 @@ export function AccountCard() {
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <CardHeader>
                         <CardTitle>Account</CardTitle>
-                        <CardDescription>{user?.email}</CardDescription>
+                        <CardDescription>{"Username: " + user?.username}</CardDescription>
+                        <CardDescription>{"Email: " + user?.email}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="grid w-full items-center gap-4">
@@ -141,35 +147,29 @@ export function AccountCard() {
                                 <div className="flex flex-col space-y-1.5 mb-5">
                                     <FormField
                                         control={form.control}
-                                        name="name"
+                                        name="first_name"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Name</FormLabel>
+                                                <FormLabel>First Name</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Name" {...field} />
+                                                    <Input placeholder="First Name" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
                                 </div>
-                                <div className="flex items-center space-x-2">
+                                <div className="flex flex-col space-y-1.5 mb-5">
                                     <FormField
                                         control={form.control}
-                                        name="notification"
-                                        render={({ field }) => (
-                                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                        name="last_name"
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Last Name</FormLabel>
                                                 <FormControl>
-                                                    <Checkbox
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                    />
+                                                    <Input placeholder="Last Name" {...field} />
                                                 </FormControl>
-                                                <div className="space-y-1 leading-none">
-                                                    <FormLabel>
-                                                        Get notifications for upcoming tasks
-                                                    </FormLabel>
-                                                </div>
+                                                <FormMessage/>
                                             </FormItem>
                                         )}
                                     />
@@ -182,7 +182,7 @@ export function AccountCard() {
                         <Button type="submit" variant="outline" disabled={userMutation.isPending}>
                             {userMutation.isPending ? (
                                 <>
-                                    <Loader2 className="animate-spin" />
+                                    <Loader2 className="animate-spin"/>
                                     <span>Please wait</span>
                                 </>
                             ) : (

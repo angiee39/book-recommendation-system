@@ -30,7 +30,6 @@ import {useRouter} from "next/navigation";
 import {createBook} from "../../services/book-service";
 import {useUser} from "@/context/user-context";
 import {useEffect} from "react";
-import {getAllUsers} from "../../services/user-service";
 import {useMutation} from "@tanstack/react-query";
 
 const FormSchema = z.object({
@@ -64,14 +63,14 @@ export function BookCreateForm() {
         },
     })
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const result = await getAllUsers();
-            if (result.isSuccess) {
-            }
-        };
-        fetchUsers();
-    }, [form.setValue]);
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         const result = await getAllUsers();
+    //         if (result.isSuccess) {
+    //         }
+    //     };
+    //     fetchUsers();
+    // }, [form.setValue]);
 
 
     useEffect(() => {

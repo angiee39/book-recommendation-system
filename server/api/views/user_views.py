@@ -33,6 +33,8 @@ class LoginView(APIView):
                     'id': user.id,
                     'username': user.username,
                     'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name
                 }
             }, status=status.HTTP_200_OK)
             response.set_cookie('access_token', str(refresh.access_token), httponly=True)
@@ -54,6 +56,7 @@ class LogoutView(APIView):
 
 
 class UserListView(APIView):
+    permission_classes = [AllowAny]
     # permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -62,6 +65,7 @@ class UserListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserDetailView(APIView):
+    permission_classes = [AllowAny]
     # permission_classes = [IsAuthenticated]
 
     def get(self, request, user_id):
@@ -72,4 +76,13 @@ class UserDetailView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-
+    def patch(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)

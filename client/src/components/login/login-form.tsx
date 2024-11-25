@@ -51,10 +51,10 @@ export function LoginForm() {
         onSuccess: (data) => {
             if (data.isSuccess) {
                 // Saving one signal external ID to send notifications to user
-                OneSignal.login(data.data.user.id.toString());
+                // OneSignal.login(data.data.user.id.toString());
                 setUser(data.data.user);
                 localStorage.setItem('user', JSON.stringify(data.data.user));
-                router.push('/tasks');
+                router.push('/books');
                 toast({
                     title: "You have successfully logged in.",
                 })
