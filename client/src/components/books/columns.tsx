@@ -80,18 +80,20 @@ export const columns: ColumnDef<Book>[] = [
                     const res = await deleteBook(book.id);
                     if (res.isSuccess) {
                         toast({
-                            description: "You have successfully deleted the book.",
+                            title: "You have successfully deleted the book.",
                         })
                         router.push('/books');
                     } else {
                         toast({
-                            description: "There was an error deleting the book.",
+                            variant: "destructive",
+                            title: "There was an error deleting the book.",
                         })
                     }
                 } catch (error) {
                     console.error(error);
                     toast({
-                        description: "There was an error deleting the book.",
+                        variant: "destructive",
+                        title: "There was an error deleting the book.",
                     })
                 }
                 setIsDeleteDialogOpen(false);
